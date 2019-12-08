@@ -17,6 +17,14 @@ function Weather({ title, date, handler }) {
   );
 }
 
+const MemoWrapper = React.memo(({ title, date }) => (
+  <Component>
+    <Weather title={title} date={date} handler={() => {}} />
+  </Component>
+));
+
+const fake_memo_func = () => {};
+
 export const MemoizedWeather = React.memo(Weather);
 
 const Button = (props) => (<button onClick={props.onClick}>{props.children}</button>)
@@ -25,28 +33,23 @@ const TestListMap = () => {
 
   const [weather, setWeather] = useState({ title: "Sun", date: "Yesterday" });
 
-  const normal_func = () => weather;
-  const memo_func = useCallback(() => weather, [weather]);
-
   return (
     <div>
       <br/>
       <div> Component with arrow function </div>
-      <Weather {...weather} handler={normal_func} />
+      <Weather {...weather} handler={() => {}} />
       <br/>
       <div> Memocomponent with arrow function </div>
-      <MemoizedWeather {...weather} handler={normal_func}/>
+      <MemoizedWeather {...weather} handler={() => {}}/>
       <br/>
       <div> Component with useCallback function </div>
-      <Weather {...weather} handler={memo_func} />
+      <Weather {...weather} handler={fake_memo_func} />
       <br/>
       <div> MemoComponent with useCallback function </div>
-      <MemoizedWeather {...weather} handler={memo_func}/>
+      <MemoizedWeather {...weather} handler={fake_memo_func}/>
       <br/>
       <div> MemoParent with arrow function on child </div>
-      <MemoComponent>
-        <Weather {...weather} handler={normal_func} />
-      </MemoComponent>
+      <MemoWrapper {...weather} />
       <br/>
       <div><Button onClick={() => setWeather({ title: "Sun", date: "Yesterday" })}>Yesterday is a good day</Button></div>
       <div><Button onClick={() => setWeather({ title: "Snow", date: "Tomorrow" })}>Tommorrow has snow!</Button></div>
