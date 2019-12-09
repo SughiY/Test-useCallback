@@ -1,7 +1,5 @@
 import React, { useState, useCallback } from "react";
 
-import "./App.css";
-
 const Component = (props) => (<div>{props.children}</div>);
 const MemoComponent = React.memo(Component);
 
@@ -31,6 +29,8 @@ const Button = (props) => (<button onClick={props.onClick}>{props.children}</but
 
 const TestListMap = () => {
 
+  const memo_func = useCallback(()=>{}, []);
+
   const [weather, setWeather] = useState({ title: "Sun", date: "Yesterday" });
 
   return (
@@ -43,10 +43,10 @@ const TestListMap = () => {
       <MemoizedWeather {...weather} handler={() => {}}/>
       <br/>
       <div> Component with useCallback function </div>
-      <Weather {...weather} handler={fake_memo_func} />
+      <Weather title={"test"} date={"Today"} handler={memo_func} />
       <br/>
       <div> MemoComponent with useCallback function </div>
-      <MemoizedWeather {...weather} handler={fake_memo_func}/>
+      <MemoizedWeather {...weather} handler={memo_func}/>
       <br/>
       <div> MemoParent with arrow function on child </div>
       <MemoWrapper {...weather} />
