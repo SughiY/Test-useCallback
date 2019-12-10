@@ -1,11 +1,14 @@
-import React, { useState, useCallback } from "react";
-
-const Component = (props) => (<div>{props.children}</div>);
-const MemoComponent = React.memo(Component);
+import React, { useState, useCallback, useRef } from "react";
 
 const Text = ({text}) => (<div>{text}</div>);
 
-function Weather({ title, date, handler }) {
+const useRenderCounts = (componentName) => {
+  const render = useRef(1);
+  console.log(`${componentName} renders count: ${render.current++}`);
+};
+
+function Weather({ name, title, date, handler }) {
+  useRenderCounts(name);
   return (
     <div>
       <div>{handler}</div>
@@ -16,10 +19,10 @@ function Weather({ title, date, handler }) {
 }
 export const MemoizedWeather = React.memo(Weather);
 
-const MemoWrapper = React.memo(({ title, date }) => (
-  <Component>
-    <Weather title={title} date={date} handler={() => {}} />
-  </Component>
+const MemoWrapper = React.memo(({ name, title, date }) => (
+  <div>
+    <Weather name={name} title={title} date={date} handler={() => {}} />
+  </div>
 ));
 
 const Button = (props) => (<button onClick={props.onClick}>{props.children}</button>)
@@ -34,19 +37,19 @@ export default (() => {
     <div>
       <br/>
       <div> Component with arrow function </div>
-      <Weather {...weather} handler={() => {}} />
+      <Weather name={"Weather1"} {...weather} handler={() => {}} />
       <br/>
       <div> Memocomponent with arrow function </div>
-      <MemoizedWeather {...weather} handler={() => {}}/>
+      <MemoizedWeather name={"Weather2"} {...weather} handler={() => {}}/>
       <br/>
       <div> Component with useCallback function </div>
-      <Weather title={"test"} date={"Today"} handler={memo_func} />
+      <Weather name={"Weather3"} title={"test"} date={"Today"} handler={memo_func} />
       <br/>
       <div> MemoComponent with useCallback function </div>
-      <MemoizedWeather {...weather} handler={memo_func}/>
+      <MemoizedWeather name={"Weather4"} {...weather} handler={memo_func}/>
       <br/>
       <div> MemoParent with arrow function on child </div>
-      <MemoWrapper {...weather} />
+      <MemoWrapper name={"Weather5"} {...weather} />
       <br/>
       <div><Button onClick={() => setWeather({ title: "Sun", date: "Yesterday" })}>Yesterday is a good day</Button></div>
       <div><Button onClick={() => setWeather({ title: "Snow", date: "Tomorrow" })}>Tommorrow has snow!</Button></div>
